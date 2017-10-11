@@ -1,3 +1,6 @@
+#include <Filters.h>
+float filterFrequency = 10.0;
+FilterOnePole lowpassFilter( LOWPASS, filterFrequency );
 const int sig = A0;
 float interval = 1000.0; //us
 // [1 / interval (us)] * [10^6 us / sec] = samples per sec
@@ -34,6 +37,6 @@ void loop() {
     // save the last time sampled 
     previous_micros = curr_micros;
     sig_val = 5.0*analogRead(sig)/1024.0;
-    Serial.println(sig_val);
+    Serial.println(lowpassFilter.input(sig_val));
   }
 }
