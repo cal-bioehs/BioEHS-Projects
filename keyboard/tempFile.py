@@ -8,7 +8,7 @@ import struct
 import pyautogui
 
 class serialPlot:
-    def __init__(self, serialPort='COM6', serialBaud=38400, dataNumBytes=2, windowLength=100, threshold=150):
+    def __init__(self, serialPort='COM3', serialBaud=38400, dataNumBytes=2, windowLength=100, threshold=150):
         self.port = serialPort
         self.baud = serialBaud
         self.dataNumBytes = dataNumBytes
@@ -55,10 +55,13 @@ class serialPlot:
         while self.isRun:
             time.sleep(0.1)
             while self.isReceiving and self.isRun:
-                data = self.rawData[0:self.dataNumBytes]
-                value, = struct.unpack(self.dataType, data)
+                #data = self.rawData[0:self.dataNumBytes]
+                value, = struct.unpack(self.dataType, self.rawData)
                 if value > self.threshold:
                     self.high = True
+                positionStr = str(value)
+                print(positionStr, end='')
+                print('\b' * len(positionStr), end='', flush=True)
 
     def backgroundThread(self):    # retrieve data
         time.sleep(1.0)  # give some buffer time for retrieving data
@@ -87,15 +90,16 @@ def cycle(x, y, s, x_increment = 105, count=10):
         time.sleep(0.5) # replace this with a while loop to keep checking
         if s.shouldClick():  # ToDo: Check if it's still over the right color
             pyautogui.click()
+            time.sleep(1.0)
 
  
 def main():
-    portName = 'COM6'
+    portName = 'COM3'
     # portName = '/dev/ttyUSB0'
     baudRate = 9600
     windowLength = 20
     dataNumBytes = 2        # number of bytes of 1 data point
-    threshold = 50
+    threshold = -210
     s = serialPlot(portName, baudRate, dataNumBytes, windowLength, threshold)   # initializes all required variables
     s.readSerialStart()     # starts background thread
 

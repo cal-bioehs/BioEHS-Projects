@@ -1,3 +1,5 @@
+int EMA_S = 0;
+int EMA_a = 0.3;
 unsigned long timer = 0;
 long loopTime = 5000;   // microseconds
  
@@ -10,7 +12,9 @@ void loop() {
   timeSync(loopTime);
   int val = analogRead(0) - 512;
   //double val = (analogRead(0) -512) / 512.0;
-  sendToPC(&val);
+  EMA_S = (EMA_a*val) + ((1-EMA_a)*EMA_S);
+  int highpass = val - EMA_S;
+  sendToPC(&highpass);
 }
  
 void timeSync(unsigned long deltaT)
