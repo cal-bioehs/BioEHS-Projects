@@ -112,13 +112,12 @@ def cycle(x, y, s, back_x, back_y, x_increment = 105, count=10):
             pyautogui.moveTo(x_temp, y_temp)
 
  
-def main():
+def main(threshold = -215):
     portName = 'COM3'
     # portName = '/dev/ttyUSB0'
     baudRate = 9600
     windowLength = 20
     dataNumBytes = 2        # number of bytes of 1 data point
-    threshold = -215
     s = serialPlot(portName, baudRate, dataNumBytes, windowLength, threshold)   # initializes all required variables
     s.readSerialStart()     # starts background thread
 
@@ -184,6 +183,12 @@ def main():
     print('Done.\n')
         
 
- 
 if __name__ == '__main__':
-    main()  
+    if len(sys.argv) > 1:
+        try:
+            main(int(sys.argv[1]))
+        except ValueError:
+            print('Please enter a integer as the threshold value.')
+            quit()
+    else:
+        main() 
